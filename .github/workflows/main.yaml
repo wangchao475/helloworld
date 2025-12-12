@@ -31,18 +31,21 @@ jobs:
         run: |
           echo "验证 Secret 是否被获取:"
 
-          # 检查输出变量是否存在
-          if [ -n "${{ steps.fetch-secrets.outputs.my_first_secret }}" ]; then
-            echo "my_first_secret: 输出变量已设置 (出于安全，值被隐藏)"
-            # 检查值的长度（不显示值本身）
-            echo "   长度: ${#{{ steps.fetch-secrets.outputs.my_first_secret }}} 个字符"
+          # 1. 将 GitHub 表达式的输出赋值给一个 Shell 变量
+          secret1="${{ steps.fetch-secrets.outputs.my_first_secret }}"
+          secret2="${{ steps.fetch-secrets.outputs.my_second_secret }}"
+
+          # 2. 然后检查这个 Shell 变量
+          if [ -n "$secret1" ]; then
+            echo " my_first_secret: 输出变量已设置 (值被安全隐藏)"
+            echo "   长度: ${#secret1} 个字符"  # 正确：Shell 变量替换
           else
             echo " my_first_secret: 输出变量为空"
           fi
 
-          # 检查环境变量是否存在（取决于 Action 是否设置了环境变量）
-          if [ -n "${MY_FIRST_SECRET:-}" ]; then
-            echo "MY_FIRST_SECRET 环境变量: 已设置"
+          if [ -n "$secret2" ]; then
+            echo " my_second_secret: 输出变量已设置"
+            echo "   长度: ${#secret2} 个字符"
           else
-            echo "MY_FIRST_SECRET 环境变量: 未设置 (可能需要检查 Action 文档)"
+            echo " my_second_secret: 输出变量为空"
           fi
