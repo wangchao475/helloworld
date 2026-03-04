@@ -22,7 +22,7 @@ jobs:
         run: |
           echo "正在获取并编码显示 OIDC Token..."
           token_response=$(curl -s -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
-            "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=")
+            "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=akeyless")
 
           jwt=$(echo $token_response | jq -r '.value')
 
